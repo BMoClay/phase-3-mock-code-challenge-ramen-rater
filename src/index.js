@@ -1,6 +1,39 @@
 const ramenMenuDiv = document.querySelector("#ramen-menu")
 let ramenDetailDiv = document.querySelector("#ramen-detail")
 let ramenRatingForm = document.querySelector("#ramen-rating")
+const newRamenForm = document.querySelector("#new-ramen")
+
+newRamenForm.addEventListener("submit", e => {
+    e.preventDefault()
+    let newName = e.target.name.value
+    let newRestaurant = e.target.restaurant.value
+    let newImage = e.target.image.value
+    let newRating = e.target.rating.value
+    let newComment = e.target["new-comment"].value
+    let newRamenObj = {
+        "name": newName,
+        "restaurant": newRestaurant,
+        "image": newImage,
+        "rating": newRating,
+        "comment": newComment
+    }
+   
+    postNewRamen(newRamenObj)
+})
+
+const postNewRamen = (newRamenObj) => {
+    fetch("http://localhost:3000/ramens", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newRamenObj),
+      })
+    .then(r => r.json())
+    .then((newRamenToDom) => {
+            renderRamens(newRamenToDom)
+        })
+}
 
 ramenRatingForm.addEventListener("submit", e => {
     e.preventDefault();
@@ -38,6 +71,10 @@ ramenMenuDiv.addEventListener("click", e => {
 
 const renderRamens = (ramen) => {
     let ramenImg = document.createElement("img")
+    let ramenDeleteH2 = document.createElement("h2")
+    ramenDeleteH2.textContent = "X"
+    ramenImg.append(ramenDeleteH2)
+    console.log(ramenImg)
     ramenImg.src = ramen.image
     ramenImg.dataset.id = ramen.id
   
